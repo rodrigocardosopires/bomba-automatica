@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/BombaAutom.ino.merged.bin'
+elf = 'build/BombaAutom.ino.elf'
