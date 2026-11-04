@@ -87,7 +87,7 @@ constexpr uint32_t LOG_NIVEIS_MS = 5000;
 // ---------------------------------------------------------------------------
 // Home Assistant via MQTT (credenciais em secrets.h)
 // ---------------------------------------------------------------------------
-#define FIRMWARE_VERSAO "1.1.0"
+#define FIRMWARE_VERSAO "1.1.1"
 #define MQTT_TOPICO_BASE "bombaautom"                    // tambem e o hostname na rede
 constexpr uint32_t MQTT_INTERVALO_PUBLICACAO_MS = 60UL * 1000UL;  // publica no minimo a cada 60 s
 constexpr uint32_t MQTT_INTERVALO_NIVEIS_MS = 5000;     // mudanca de nivel: no maximo a cada 5 s

@@ -37,6 +37,9 @@ bool cicloAtivo = false;
 bool falhaTempo = false;
 bool emergenciaAcionada = false;
 uint32_t bombaLigadaEm = 0;
+// Tempo ligada nas etapas anteriores do ciclo. Pausas por falha de sensor nao zeram
+// o limite de TEMPO_MAX_BOMBA_MS; so um novo ciclo ou destravar a emergencia zeram.
+uint32_t tempoBombaCicloMs = 0;
 uint32_t bombaDesligadaEm = 0;
 bool bombaJaDesligou = false;
 
@@ -90,6 +93,7 @@ Estado calcularEstado() {
     // Destravar a emergencia tambem rearma a falha por tempo maximo.
     emergenciaAcionada = false;
     falhaTempo = false;
+    tempoBombaCicloMs = 0;
   }
 
   if (estado == Estado::INICIANDO && millis() < TEMPO_INICIALIZACAO_MS) {
@@ -107,7 +111,7 @@ Estado calcularEstado() {
       cicloAtivo = false;
       return Estado::OCIOSO;
     }
-    if (estado == Estado::BOMBANDO && millis() - bombaLigadaEm >= TEMPO_MAX_BOMBA_MS) {
+    if (estado == Estado::BOMBANDO && tempoBombaCicloMs + (millis() - bombaLigadaEm) >= TEMPO_MAX_BOMBA_MS) {
       cicloAtivo = false;
       falhaTempo = true;
       return Estado::FALHA_TEMPO;
@@ -118,6 +122,7 @@ Estado calcularEstado() {
 
   if ((p1000 <= NIVEL_LIGA || p500 <= NIVEL_LIGA) && podeReligar()) {
     cicloAtivo = true;
+    tempoBombaCicloMs = 0;
     return Estado::BOMBANDO;
   }
   return Estado::OCIOSO;
@@ -128,6 +133,7 @@ void mudarEstado(Estado novo) {
   if (novo == Estado::BOMBANDO) {
     bombaLigadaEm = millis();
   } else if (estado == Estado::BOMBANDO) {
+    tempoBombaCicloMs += millis() - bombaLigadaEm;
     bombaDesligadaEm = millis();
     bombaJaDesligou = true;
   }

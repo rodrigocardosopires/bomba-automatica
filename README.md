@@ -75,7 +75,7 @@ flowchart TD
 - **Histerese:** a bomba liga com 20% ou menos em qualquer caixa e só desliga quando as duas chegam a 100%. O limite de desligamento está em 98% (`NIVEL_DESLIGA`), por causa da precisão do sensor.
 - **Saída da emergência:** ao destravar o cogumelo, o sistema volta ao normal e reavalia os níveis. Se estava enchendo, continua até 100%. Destravar também rearma a falha de tempo máximo.
 - **Falha de sensor:** sem eco válido em várias leituras seguidas, o relé desliga. O ciclo de enchimento fica guardado e retoma quando o sensor volta.
-- **Tempo máximo:** 60 minutos ligada sem encher as duas caixas (cisterna seca, por exemplo) desliga a bomba até o rearme pela emergência.
+- **Tempo máximo:** 60 minutos ligada sem encher as duas caixas (cisterna seca, por exemplo) desliga a bomba até o rearme pela emergência. O tempo é somado durante todo o enchimento: pausas por falha de sensor não zeram a contagem.
 - **Intervalo mínimo:** depois de desligar, a bomba espera 30 segundos antes de poder religar.
 - **Medição:** cada sensor usa a mediana de 5 leituras com `pulseIn` e timeout. Os dois sensores disparam alternadamente, a cada 70 ms, para um não ouvir o eco do outro. A conversão é `pct = (distVazio - d) / (distVazio - distCheio) * 100`, limitada entre 0 e 100.
 - **Sem `delay()`:** LEDs, display e entradas usam `millis()`, para o LED piscar e os botões responderem na hora. O LED vermelho fica aceso enquanto a bomba está ligada no automático.
